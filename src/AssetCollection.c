@@ -1,16 +1,40 @@
-#include "WavCollection.h"
+#include "AssetCollection.h"
+#include <stdio.h>
+struct WaveCollection* add_WaveCollection(struct WaveCollection* pwc, const char* file)
+{
+    if (pwc == NULL)
+    {
+        pwc = (struct WaveCollection*)RL_MALLOC(sizeof(struct WaveCollection));
+        if (pwc == NULL)
+            return NULL;                     /* allocation failure */
+        pwc->waves = NULL;
+        pwc->count = 0;
+    }
+
+    Wave* new_waves = (Wave*)RL_REALLOC(pwc->waves,
+                                        (pwc->count + 1) * sizeof(Wave));
+    if (new_waves == NULL)
+        return pwc;                          /* or handle failure as preferred */
+    
+    pwc->waves = new_waves;
+    pwc->waves[pwc->count] = LoadWave(file);
+    pwc->count++;
+
+    return pwc;
+}
 
 // ------------------------------------------------------------------
 // Écriture d’une collection de Wave dans un fichier binaire
 // ------------------------------------------------------------------
-bool SaveWavesToBinary(const char *fileName, const WaveCollection *collection)
+bool save_WavesToBinary(const char *fileName, const struct WaveCollection *collection)
 {
     if (fileName == NULL || collection == NULL || collection->count == 0)
         return false;
-
     FILE *file = fopen(fileName, "wb");
     if (file == NULL)
-        return false;
+    {
+        
+    }
 
     // 1. Écrire le nombre de Wave
     unsigned int count = collection->count;
@@ -55,7 +79,7 @@ bool SaveWavesToBinary(const char *fileName, const WaveCollection *collection)
 // ------------------------------------------------------------------
 // Lecture d’une collection de Wave depuis un fichier binaire
 // ------------------------------------------------------------------
-bool LoadWavesFromBinary(const char *fileName, WaveCollection *collection)
+bool load_WavesFromBinary(const char *fileName, struct WaveCollection *collection)
 {
     if (fileName == NULL || collection == NULL)
         return false;
@@ -127,7 +151,7 @@ bool LoadWavesFromBinary(const char *fileName, WaveCollection *collection)
 // ------------------------------------------------------------------
 // Libération de la mémoire d’une collection
 // ------------------------------------------------------------------
-void UnloadWaveCollection(WaveCollection *collection)
+void unload_WaveCollection(struct WaveCollection *collection)
 {
     if (collection == NULL) return;
 
