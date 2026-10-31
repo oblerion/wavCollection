@@ -12,7 +12,7 @@ struct WaveCollection
 };
 struct WaveCollection* add_WaveCollection(struct WaveCollection* pwc, const char* file);
 bool save_WavesToBinary(const char *fileName, const struct WaveCollection *collection);
-bool load_WavesFromBinary(const char *fileName, struct WaveCollection *collection);
+struct WaveCollection* load_WavesFromBinary(const char *fileName);
 void unload_WaveCollection(struct WaveCollection *collection);
 
 
